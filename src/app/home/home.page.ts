@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ModalController } from '@ionic/angular';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox, IonLabel, IonListHeader } from '@ionic/angular/standalone';
-import { Task } from '../core/models/todo.model';
+import { ModalController, AlertController } from '@ionic/angular';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox, IonLabel, IonListHeader, IonChip, IonSelect, IonSelectOption} from '@ionic/angular/standalone';
+import { Category, Task } from '../core/models/todo.model';
 
 import { CategoryModalComponent } from '../components/category-modal/category-modal.component';
 
@@ -12,6 +13,7 @@ import { CategoryModalComponent } from '../components/category-modal/category-mo
   styleUrls: ['home.page.scss'],
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     IonContent,
     IonHeader,
@@ -25,16 +27,25 @@ import { CategoryModalComponent } from '../components/category-modal/category-mo
     IonCheckbox,
     IonLabel,
     IonListHeader,
+    IonChip,
+    IonSelect, 
+    IonSelectOption
   ],
 })
 export class HomePage {
   public taskName: string = '';
   public taskList: Task[] = [];
+  public selectedCategory: string | null = null;
+  public categories: Category[] = [];
 
-  constructor(private modalCtrl: ModalController) {
+  constructor(private modalCtrl: ModalController, private alertCtrl: AlertController) {
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
       this.taskList = JSON.parse(storedTasks);
+    }
+    const storedCategories = localStorage.getItem('categories');
+    if (storedCategories) {
+      this.categories = JSON.parse(storedCategories);
     }
   }
 
@@ -44,7 +55,8 @@ export class HomePage {
       id: date.getTime().toString(),
       name: this.taskName,
       completed: false,
-      createdAt: date.getTime().toString()
+      createdAt: date.getTime().toString(),
+      categoryId: this.selectedCategory || ""
     };
 
     this.taskList.push(newTask);
@@ -54,13 +66,29 @@ export class HomePage {
   }
 
   deleteTask(task: Task) {
-    if (confirm('Seguro que deseas eliminar la terea')) {
-      const index = this.taskList.indexOf(task);
-      if (index > -1) {
-        this.taskList.splice(index, 1);
-      }
-    }
-    localStorage.setItem('tasks', JSON.stringify(this.taskList));
+
+    const alert = this.alertCtrl.create({
+      header: 'Confirmación',
+      message: '¿Estás seguro de que deseas eliminar esta tarea?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Eliminar',
+          handler: () => {
+            const index = this.taskList.indexOf(task);
+            if (index > -1) {
+              this.taskList.splice(index, 1);
+              localStorage.setItem('tasks', JSON.stringify(this.taskList));
+            }
+          }
+        }
+      ]
+    });
+
+    alert.then(alertEl => alertEl.present());
   }
 
   toggleTaskCompletion(task: Task, event: any) {

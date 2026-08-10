@@ -26,6 +26,14 @@
   text-decoration: none;
 }
 
+ion-item{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  --background: var(--ion-background-color);
+  --color: var(--ion-text-color);
+}
+
 ion-item.completed {
   background-color: #a4eba4dc;
   color: #0f0e0e;

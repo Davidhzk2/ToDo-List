@@ -21,6 +21,13 @@
       <ion-item>
         <ion-input placeholder="Nombre tarea" [(ngModel)]="taskName"></ion-input>
       </ion-item>
+      <ion-item>
+        <ion-select placeholder="Seleccionar categoría" [(ngModel)]="selectedCategory">
+          <ion-select-option *ngFor="let category of categories" [value]="category.id">
+            {{ category.name }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
       <ion-button  color="success" [disabled]="!taskName.trim()" (click)="addTask()">
         <ion-icon name="add"></ion-icon>
         <span>Agregar</span>
@@ -35,9 +42,11 @@
           <ion-item class="task-item {{task.completed ? 'completed' : ''}}">
             <ion-checkbox class="{{task.completed ? 'completed' : ''}}" (ionChange)="toggleTaskCompletion(task, $event)" [checked]="task.completed"></ion-checkbox>
             <ion-label>{{task.name}}</ion-label>
-            <ion-button (click)="deleteTask(task)" color="danger">
-              <ion-icon name="trash-outline"></ion-icon>
-              <span>Eliminar</span>
+            <ion-chip *ngIf="task.categoryId" color="primary" outline="true">
+              <ion-label>categoria</ion-label>
+            </ion-chip>
+            <ion-button slot="end" (click)="deleteTask(task)" color="danger">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
             </ion-button>
           </ion-item>
     
