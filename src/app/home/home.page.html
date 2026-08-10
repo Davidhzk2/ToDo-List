@@ -4,38 +4,50 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="ion-padding">
   <ion-header collapse="condense">
     <ion-toolbar>
       <ion-title size="large">ToDo List</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <ion-button (click)="openCategoryModal()" color="primary">
+    <ion-icon name="add-circle-outline"></ion-icon>
+    <span>Agregar Categoria</span>
+  </ion-button>
+
   <div id="container">
-    <h4>Agregar Tarea</h4>
-    <ion-item>
-      <ion-input placeholder="Nombre tarea" [(ngModel)]="taskName"></ion-input>
-    </ion-item>
-    <ion-button [disabled]="!taskName.trim()" (click)="addTask()">
-      <ion-icon name="add"></ion-icon>
-      <span>Agregar tarea</span>
-    </ion-button>
+      <ion-title>Agregar Tarea</ion-title>
+      <ion-item>
+        <ion-input placeholder="Nombre tarea" [(ngModel)]="taskName"></ion-input>
+      </ion-item>
+      <ion-button [disabled]="!taskName.trim()" (click)="addTask()">
+        <ion-icon name="add"></ion-icon>
+        <span>Agregar</span>
+      </ion-button>
 
     <div>
-      <h5>Mis tareas</h5>
-      @for(task of taskList; track task.name){
-      <div class="task-item {{task.completed ? 'completed' : ''}}">
-        <ion-checkbox (ionChange)="toggleTaskCompletion(task, $event)" [checked]="task.completed"></ion-checkbox>
-        <span>{{task.name}}</span>
-        <ion-button (click)="deleteTask(task)" color="danger">
-          <ion-icon name="trash-outline"></ion-icon>
-          <span>Eliminar</span>
-        </ion-button>
-      </div>
+      <ion-list lines="none">
+        <ion-list-header>
+         <ion-title>Mis tareas</ion-title>
+        </ion-list-header>
+          @for(task of taskList; track task.name){
+          <ion-item class="task-item {{task.completed ? 'completed' : ''}}">
+            <ion-checkbox (ionChange)="toggleTaskCompletion(task, $event)" [checked]="task.completed"></ion-checkbox>
+            <ion-label>{{task.name}}</ion-label>
+            <ion-button (click)="deleteTask(task)" color="danger">
+              <ion-icon name="trash-outline"></ion-icon>
+              <span>Eliminar</span>
+            </ion-button>
+          </ion-item>
+    
+          }@empty{
+          <ion-item>
+            <ion-label>no tienes tareas agregadas!</ion-label>
+          </ion-item>
+          }
 
-      }@empty{
-      <p>no tienes tareas agregadas!</p>
-      }
+      </ion-list>
     </div>
   </div>
 </ion-content>

@@ -1,6 +1,10 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox} from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox, IonLabel, IonListHeader } from '@ionic/angular/standalone';
+import { Task } from '../core/models/todo.model';
+
+import { CategoryModalComponent } from '../components/category-modal/category-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -19,13 +23,16 @@ import {IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButto
     IonIcon,
     IonList,
     IonCheckbox,
+    IonLabel,
+    IonListHeader,
+    CategoryModalComponent
   ],
 })
 export class HomePage {
   public taskName: string = '';
   public taskList: Task[] = [];
 
-  constructor() {
+  constructor(private modalCtrl: ModalController) {
     const storedTasks = localStorage.getItem('tasks');
     if (storedTasks) {
       this.taskList = JSON.parse(storedTasks);
@@ -38,6 +45,7 @@ export class HomePage {
       id: date.getTime().toString(),
       name: this.taskName,
       completed: false,
+      createdAt: date.getTime().toString()
     };
 
     this.taskList.push(newTask);
@@ -60,12 +68,15 @@ export class HomePage {
     task.completed = event?.detail?.checked ?? !task.completed;
     localStorage.setItem('tasks', JSON.stringify(this.taskList));
   }
+
+  async openCategoryModal() {
+    const modal = await this.modalCtrl.create({
+      component: CategoryModalComponent,
+    });
+
+    await modal.present();
+  }
 }
 
 
-export interface Task {
-  id:string,
-  name: string;
-  completed:boolean;
 
-}
