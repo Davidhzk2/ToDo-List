@@ -11,7 +11,7 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-button (click)="openCategoryModal()" color="primary">
+  <ion-button color="secondary" (click)="openCategoryModal()" >
     <ion-icon name="add-circle-outline"></ion-icon>
     <span>Agregar Categoria</span>
   </ion-button>
@@ -21,19 +21,19 @@
       <ion-item>
         <ion-input placeholder="Nombre tarea" [(ngModel)]="taskName"></ion-input>
       </ion-item>
-      <ion-button [disabled]="!taskName.trim()" (click)="addTask()">
+      <ion-button  color="success" [disabled]="!taskName.trim()" (click)="addTask()">
         <ion-icon name="add"></ion-icon>
         <span>Agregar</span>
       </ion-button>
 
     <div>
-      <ion-list lines="none">
+      <ion-list lines="full">
         <ion-list-header>
          <ion-title>Mis tareas</ion-title>
         </ion-list-header>
           @for(task of taskList; track task.name){
           <ion-item class="task-item {{task.completed ? 'completed' : ''}}">
-            <ion-checkbox (ionChange)="toggleTaskCompletion(task, $event)" [checked]="task.completed"></ion-checkbox>
+            <ion-checkbox class="{{task.completed ? 'completed' : ''}}" (ionChange)="toggleTaskCompletion(task, $event)" [checked]="task.completed"></ion-checkbox>
             <ion-label>{{task.name}}</ion-label>
             <ion-button (click)="deleteTask(task)" color="danger">
               <ion-icon name="trash-outline"></ion-icon>

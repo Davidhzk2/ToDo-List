@@ -30,3 +30,11 @@ ion-item.completed {
   background-color: #a4eba4dc;
   color: #0f0e0e;
 }
+
+ion-checkbox.completed {
+  --checkbox-background-checked:var(--ion-color-success);
+}
+
+ion-checkbox.completed::part(container) {
+  border: 1px solid var(--ion-color-success);
+}

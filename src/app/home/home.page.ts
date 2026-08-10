@@ -25,7 +25,6 @@ import { CategoryModalComponent } from '../components/category-modal/category-mo
     IonCheckbox,
     IonLabel,
     IonListHeader,
-    CategoryModalComponent
   ],
 })
 export class HomePage {
