@@ -21,8 +21,8 @@
   </ion-item>
 
   <ion-list>
-    <ng-container *ngIf="categories?.length; else emptyList">
-      <ion-item *ngFor="let cat of categories">
+    <!-- <ng-container *ngIf="categories$?.length; else emptyList"> -->
+      <ion-item *ngFor="let cat of categories$ | async">
         <ion-label>{{ cat.name }}</ion-label>
         <ion-button slot="end" color="medium" (click)="editCategory(cat)">
           <ion-icon name="create-outline" slot="icon-only"></ion-icon>
@@ -31,11 +31,11 @@
           <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-item>
-    </ng-container>
-    <ng-template #emptyList>
+    <!-- </ng-container> -->
+    <!-- <ng-template #emptyList>
       <ion-item>
         <ion-label>No tienes categorías agregadas!</ion-label>
       </ion-item>
-    </ng-template>
+    </ng-template> -->
   </ion-list>
 </ion-content>
