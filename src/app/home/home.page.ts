@@ -24,6 +24,8 @@ import { combineLatest, map } from 'rxjs';
 import { CategoryModalComponent } from '../components/category-modal/category-modal.component';
 import { TodoService } from '../core/services/todo.service';
 
+import { RemoteConfigService } from '../core/services/remote-config.service';
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -54,11 +56,14 @@ export class HomePage {
   public selectedCategory: string | null = null;
 
   public todoService = inject(TodoService);
+  private remoteConfigService = inject(RemoteConfigService);
   private modalCtrl = inject(ModalController);
   private alertCtrl = inject(AlertController);
 
   public categories$ = this.todoService.categories$;
   public selectedCategory$ = this.todoService.selectedCategory$;
+
+  isCategoriesEnabled$ = this.remoteConfigService.categoriesEnabled$;
 
   public filteredTasks$ = combineLatest([
     this.todoService.tasks$,

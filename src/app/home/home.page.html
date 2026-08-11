@@ -14,10 +14,13 @@
   <div id="container">
     <div class="container-header">
       <ion-title class="title" color="secondary">Agregar Tarea</ion-title>
-      <ion-button color="secondary" (click)="openCategoryModal()">
-        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
-        <span>Gestionar Categorías</span>
-      </ion-button>
+
+      @if(isCategoriesEnabled$ | async){
+        <ion-button color="secondary" (click)="openCategoryModal()">
+          <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+          <span>Gestionar Categorías</span>
+        </ion-button>
+      }
     </div>
 
     <div class="form-container">
@@ -25,20 +28,22 @@
         <ion-input placeholder="Nombre tarea" [(ngModel)]="taskName"></ion-input>
       </ion-item>
 
-      <ion-item lines="full">
-        <ion-select
-          placeholder="Seleccionar categoría"
-          [(ngModel)]="selectedCategory"
-        >
-          <ion-select-option value="">Sin categoría</ion-select-option>
-          <!-- Carga optimizada con @for -->
-          @for (category of categories$ | async; track category.id) {
-            <ion-select-option [value]="category.id">
-              {{ category.name }}
-            </ion-select-option>
-          }
-        </ion-select>
-      </ion-item>
+      @if(isCategoriesEnabled$ |async ){
+        <ion-item lines="full">
+          <ion-select
+            placeholder="Seleccionar categoría"
+            [(ngModel)]="selectedCategory"
+          >
+            <ion-select-option value="">Sin categoría</ion-select-option>
+            <!-- Carga optimizada con @for -->
+            @for (category of categories$ | async; track category.id) {
+              <ion-select-option [value]="category.id">
+                {{ category.name }}
+              </ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      }
 
       <ion-button
         color="success"
@@ -54,24 +59,28 @@
       <div class="container-header">
         <ion-title class="title" color="secondary">Mis tareas</ion-title>
 
-        <div slot="end" class="filter-container">
-          <ion-label class="filter-label">Filtrar:</ion-label>
-          <ion-item lines="none" class="filter-select-item">
-            <ion-select
-              [value]="selectedCategory$ | async"
-              (ionChange)="onFilterChange($event)"
-              interface="popover"
-              placeholder="Categoría"
-            >
-              <ion-select-option value="ALL">Todas</ion-select-option>
-              @for (category of categories$ | async; track category.id) {
-                <ion-select-option [value]="category.id">
-                  {{ category.name }}
-                </ion-select-option>
-              }
-            </ion-select>
-          </ion-item>
-        </div>
+        @if(isCategoriesEnabled$ | async){
+          <div slot="end" class="filter-container">
+            <ion-label class="filter-label">Filtrar categoria:</ion-label>
+            <ion-item lines="none" class="filter-select-item">
+              <ion-select
+                [value]="selectedCategory$ | async"
+                (ionChange)="onFilterChange($event)"
+                interface="popover"
+                placeholder="Categoría"
+              >
+                <ion-select-option value="ALL">Todas</ion-select-option>
+                @for (category of categories$ | async; track category.id) {
+                  <ion-select-option [value]="category.id">
+                    {{ category.name }}
+                  </ion-select-option>
+                }
+              </ion-select>
+            </ion-item>
+          </div>
+
+        }
+
       </div>
 
       <ion-list lines="none" class="task-list">
@@ -89,23 +98,27 @@
               {{ task.name }}
             </ion-label>
 
-            @if (task.categoryName && task.categoryName !== 'Sin Categoría') {
-              <ion-chip class="category-chip" color="tertiary" [outline]="true">
-                <ion-label>{{ task.categoryName }}</ion-label>
-              </ion-chip>
-            } @else {
-              <ion-chip class="category-chip empty">
-                <ion-label>Sin categoría</ion-label>
-              </ion-chip>
+            @if(isCategoriesEnabled$ | async){
+              @if (task.categoryName && task.categoryName !== 'Sin Categoría') {
+                <ion-chip class="category-chip" color="tertiary" [outline]="true">
+                  <ion-label>{{ task.categoryName }}</ion-label>
+                </ion-chip>
+              } @else {
+                <ion-chip class="category-chip empty">
+                  <ion-label>Sin categoría</ion-label>
+                </ion-chip>
+              }
             }
 
-            <ion-button
-              slot="end"
-              color="secondary"
-              (click)="changeTaskCategory(task)"
-            >
-              <ion-icon name="create-outline" ></ion-icon>
-            </ion-button>
+            @if(isCategoriesEnabled$ | async){
+              <ion-button
+                slot="end"
+                color="secondary"
+                (click)="changeTaskCategory(task)"
+              >
+                <ion-icon name="create-outline" ></ion-icon>
+              </ion-button>
+            }  
 
             <ion-button
               slot="end"
