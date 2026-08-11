@@ -1,11 +1,9 @@
 #container {
   text-align: center;
 
-  position: absolute;
   left: 0;
   right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 20%;
 }
 
 #container strong {
@@ -26,23 +24,132 @@
   text-decoration: none;
 }
 
-ion-item{
+.task-list-container{
+  margin-top: 30px;
+  padding: 0px 10px;
+}
+
+.container-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+
+.form-container{
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 95%;
+  flex-direction: column;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #1a1a1a;
+  margin: auto auto;
+}
+
+.title{
+  text-align: start;
+}
+
+.filter-container {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  --background: var(--ion-background-color);
-  --color: var(--ion-text-color);
+  gap: 6px;
+  padding-right: 12px;
+
+  .filter-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--ion-color-primary, #3880ff);
+  }
+
+  .filter-select-item {
+    --background: #ffffff;
+    --min-height: 32px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    border: 1.5px solid #1a1a1a;
+    border-radius: 8px;
+    height: 34px;
+
+    ion-select {
+      font-size: 0.85rem;
+      min-height: 32px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
 }
 
-ion-item.completed {
-  background-color: #a4eba4dc;
-  color: #0f0e0e;
+// Contenedor principal del listado
+.task-list {
+  background: transparent;
+  padding: 8px 0;
 }
 
-ion-checkbox.completed {
-  --checkbox-background-checked:var(--ion-color-success);
+// Estilos para cada tarjeta/item de tarea (diseño del wireframe)
+.task-card {
+  --background: #ffffff;
+  --inner-padding-end: 8px;
+  --padding-start: 12px;
+  --min-height: 52px;
+
+  margin-bottom: 12px;
+  border: 1.5px solid #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s ease;
+
+  &.completed {
+    --background: #dbf6eaea;
+    border-color: #0f5132;
+  }
+
+  ion-checkbox {
+    --size: 24px;
+    margin-right: 12px;
+  }
+  ion-checkbox.completed {
+  --checkbox-background-checked: var(--ion-color-success);
 }
 
 ion-checkbox.completed::part(container) {
   border: 1px solid var(--ion-color-success);
+}
+
+  .task-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1a1a1a;
+
+    &.strike {
+      text-decoration: line-through;
+      opacity: 0.7;
+    }
+  }
+
+  .category-chip {
+    margin: 0 12px;
+    height: 28px;
+    font-size: 0.85rem;
+    font-weight: 500;
+
+    &.empty {
+      --background: transparent;
+      --color: #777777;
+      border-style: dashed;
+    }
+
+    ion-label {
+      margin: 0 8px;
+    }
+  }
+
+   
+}
+
+// Mensaje cuando la lista está vacía
+.empty-item {
+  --background: transparent;
+  color: #666666;
+  font-style: italic;
 }

@@ -2,7 +2,7 @@
 export interface Task {
     id:string;
     name: string;
-    categoryId?: string;
+    categoryId?: string | undefined;
     completed:boolean;
     createdAt: string;
 }

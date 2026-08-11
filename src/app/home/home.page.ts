@@ -2,10 +2,12 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController, AlertController } from '@ionic/angular';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox, IonLabel, IonListHeader, IonChip, IonSelect, IonSelectOption} from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox, IonLabel,  IonChip, IonSelect, IonSelectOption} from '@ionic/angular/standalone';
 import { Category, Task } from '../core/models/todo.model';
+import { combineLatest, map } from 'rxjs';
 
 import { CategoryModalComponent } from '../components/category-modal/category-modal.component';
+import {TodoService} from '../core/services/todo.service';
 
 @Component({
   selector: 'app-home',
@@ -26,73 +28,87 @@ import { CategoryModalComponent } from '../components/category-modal/category-mo
     IonList,
     IonCheckbox,
     IonLabel,
-    IonListHeader,
     IonChip,
-    IonSelect, 
-    IonSelectOption
+    IonSelect,
+    IonSelectOption,
   ],
 })
 export class HomePage {
   public taskName: string = '';
   public taskList: Task[] = [];
   public selectedCategory: string | null = null;
-  public categories: Category[] = [];
+  public categories$ = this.todoService.categories$;
+  selectedCategory$ = this.todoService.selectedCategory$;
 
-  constructor(private modalCtrl: ModalController, private alertCtrl: AlertController) {
-    const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) {
-      this.taskList = JSON.parse(storedTasks);
-    }
-    const storedCategories = localStorage.getItem('categories');
-    if (storedCategories) {
-      this.categories = JSON.parse(storedCategories);
-    }
+  filteredTasks$ = combineLatest([
+    this.todoService.tasks$,
+    this.todoService.categories$,
+    this.todoService.selectedCategory$,
+  ]).pipe(
+    map(([tasks, categories, selectedCatId]) => {
+      const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
+
+      const filtered =
+        selectedCatId === 'ALL'
+          ? tasks
+          : tasks.filter((t) => t.categoryId === selectedCatId);
+
+      // Adjuntar el nombre de la categoría a cada tarea
+      return filtered.map((task) => ({
+        ...task,
+        categoryName:
+          categoryMap.get(task.categoryId ? task.categoryId : '') ||
+          'Sin Categoría',
+      }));
+    }),
+  );
+
+  constructor(
+    private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
+    public todoService: TodoService,
+  ) {}
+
+  onFilterChange(ev: any) {
+    this.todoService.setFilter(ev.detail.value);
   }
 
-  addTask() {
-    const date = new Date();
-    const newTask = {
-      id: date.getTime().toString(),
-      name: this.taskName,
-      completed: false,
-      createdAt: date.getTime().toString(),
-      categoryId: this.selectedCategory || ""
-    };
-
-    this.taskList.push(newTask);
-    localStorage.setItem('tasks', JSON.stringify(this.taskList));
-
+  async addTask() {
+    if (!this.taskName.trim()) return;
+    await this.todoService.addTask(
+      this.taskName.trim(),
+      this.selectedCategory || '',
+    );
     this.taskName = '';
+    this.selectedCategory = null;
   }
 
-  deleteTask(task: Task) {
-
-    const alert = this.alertCtrl.create({
+  async deleteTask(task: Task) {
+    const alert = await this.alertCtrl.create({
       header: 'Confirmación',
       message: '¿Estás seguro de que deseas eliminar esta tarea?',
       buttons: [
         {
           text: 'Cancelar',
-          role: 'cancel'
+          role: 'cancel',
         },
         {
           text: 'Eliminar',
-          handler: () => {
-            const index = this.taskList.indexOf(task);
-            if (index > -1) {
-              this.taskList.splice(index, 1);
-              localStorage.setItem('tasks', JSON.stringify(this.taskList));
-            }
-          }
-        }
-      ]
+          role: 'destructive',
+          handler: async () => {
+            // Llama al servicio delegando la eliminación y persistencia reactiva
+            await this.todoService.deleteTask(task.id);
+          },
+        },
+      ],
     });
 
-    alert.then(alertEl => alertEl.present());
+    await alert.present();
   }
 
-  toggleTaskCompletion(task: Task, event: any) {
+  async toggleTaskCompletion(task: Task, event: any) {
     task.completed = event?.detail?.checked ?? !task.completed;
+    await this.todoService.toggleTask(task.id);
     localStorage.setItem('tasks', JSON.stringify(this.taskList));
   }
 
