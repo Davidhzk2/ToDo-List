@@ -24,18 +24,18 @@
   text-decoration: none;
 }
 
-.task-list-container{
+.task-list-container {
   margin-top: 30px;
   padding: 0px 10px;
 }
 
-.container-header{
+.container-header {
   display: flex;
   justify-content: space-between;
   margin-bottom: 5px;
 }
 
-.form-container{
+.form-container {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -46,7 +46,7 @@
   margin: auto auto;
 }
 
-.title{
+.title {
   text-align: start;
 }
 
@@ -109,13 +109,14 @@
     --size: 24px;
     margin-right: 12px;
   }
-  ion-checkbox.completed {
-  --checkbox-background-checked: var(--ion-color-success);
-}
 
-ion-checkbox.completed::part(container) {
-  border: 1px solid var(--ion-color-success);
-}
+  ion-checkbox.completed {
+    --checkbox-background-checked: var(--ion-color-success);
+  }
+
+  ion-checkbox.completed::part(container) {
+    border: 1px solid var(--ion-color-success);
+  }
 
   .task-title {
     font-size: 1rem;
@@ -129,7 +130,6 @@ ion-checkbox.completed::part(container) {
   }
 
   .category-chip {
-
     &.empty {
       --background: transparent;
       --color: #777777;
@@ -139,8 +139,6 @@ ion-checkbox.completed::part(container) {
       margin: 0 8px;
     }
   }
-
-   
 }
 
 .empty-item {

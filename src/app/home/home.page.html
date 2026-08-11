@@ -78,6 +78,7 @@
         @for (task of filteredTasks$ | async; track task.id) {
           <ion-item class="task-card" [class.completed]="task.completed">
             <ion-checkbox
+              class="completed" 
               slot="start"
               [checked]="task.completed"
               (ionChange)="toggleTaskCompletion(task)"
