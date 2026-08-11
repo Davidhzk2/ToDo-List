@@ -84,4 +84,4 @@ Inicialmente la bandera tiene el valor *true* lo que permite que se muetre el bo
 
 Los entregables correspondientes al proyecto (APK final, respuestas, pruebas y evidencias de funcionamiento) se encuentran disponibles en el siguiente enlace de Google Drive:
 
-    Enlace a Drive: [https://drive.google.com/drive/folders/1bTUyi5gR-vAIrEnnbQjD3U0pV3lxl31f?usp=drive_link]
+    Enlace a Drive: [Entrables](https://drive.google.com/drive/folders/1bTUyi5gR-vAIrEnnbQjD3U0pV3lxl31f?usp=drive_link)
