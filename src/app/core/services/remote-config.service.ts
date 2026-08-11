@@ -26,7 +26,6 @@ export class RemoteConfigService {
     try {
       const activated = await fetchAndActivate(this.remoteConfig);
 
-      // Mantenemos el contexto de inyección activo para que AngularFire no lance el warning
       const isEnabled = runInInjectionContext(this.injector, () => {
         return getValue(this.remoteConfig, 'enable_categories').asBoolean();
       });
