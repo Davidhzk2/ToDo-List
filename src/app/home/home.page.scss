@@ -80,13 +80,11 @@
   }
 }
 
-// Contenedor principal del listado
 .task-list {
   background: transparent;
   padding: 8px 0;
 }
 
-// Estilos para cada tarjeta/item de tarea (diseño del wireframe)
 .task-card {
   --background: #ffffff;
   --inner-padding-end: 8px;
@@ -145,7 +143,6 @@ ion-checkbox.completed::part(container) {
    
 }
 
-// Mensaje cuando la lista está vacía
 .empty-item {
   --background: transparent;
   color: #666666;
