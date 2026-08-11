@@ -18,7 +18,7 @@ El proyecto está distribuido en diferentes ramas para mantener un historial lim
   * Filtrar la lista de tareas por categoría seleccionada.
 * **`firabese/feature-flag`**: Integra la arquitectura de **Firebase Remote Config** para controlar la visibilidad y disponibilidad de la gestión de categorías en tiempo real mediante *Feature Flags* sin necesidad de redesplegar la aplicación.
 
-El resultado del APK se genara con base es esta rama ya que es la que tiene el acumulado de cambios. 
+**Importante:** El resultado del APK se genara con base a esta rama ya que es la que contiene el acumulado de cambios. 
 
 ---
 ## Requisitos Previos
@@ -63,12 +63,25 @@ ionic serve
 ```Plaintext
 src/
 ├── app/
-│   ├── components/       # Modales y componentes secundarios (CategoryModalComponent)
+│   ├── components/       # Modales 
 │   ├── core/
-│   │   ├── models/       # Interfaces de datos (Task, Category, FeatureFlags)
+│   │   ├── models/       # Interfaces de datos (Task, Category)
 │   │   └── services/     # TodoService, RemoteConfigService
-│   ├── home/             # Vista principal optimizada (HomePage)
+│   ├── home/             # Vista principal (HomePage)
 │   └── app.module.ts     # Configuración e inicialización de Firebase
 └── environments/         # Credenciales de entorno (environment.ts)
 
 ```
+
+
+## Integración con Firebase Remote Config (Feature Flags)
+
+* **Bandera Dinámica** `(enable_categories)`: Permite habilitar o deshabilitar la funcionalidad de categorías desde la Consola de Firebase en tiempo real, impactando la visibilidad del módulo en la interfaz sin requerir un nuevo despliegue de la aplicación.
+
+Inicialmente la bandera tiene el valor *true* lo que permite que se muetre el botón de gestionar tareas, input para selecionar la categoria al momento de agregar una tarea y el filtro de las categorias, si en el Firebase se cambia el valor de la bandera a *false* no se visualizaran dichos elementos en la aplicación . 
+
+## Entregables y Evidencias
+
+Los entregables correspondientes al proyecto (APK final, respuestas, pruebas y evidencias de funcionamiento) se encuentran disponibles en el siguiente enlace de Google Drive:
+
+    Enlace a Drive: [https://drive.google.com/drive/folders/1bTUyi5gR-vAIrEnnbQjD3U0pV3lxl31f?usp=drive_link]
