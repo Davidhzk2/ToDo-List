@@ -1,19 +1,35 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ModalController, AlertController } from '@ionic/angular';
-import { IonContent, IonHeader, IonToolbar, IonTitle, IonItem, IonInput, IonButton, IonIcon, IonList, IonCheckbox, IonLabel,  IonChip, IonSelect, IonSelectOption} from '@ionic/angular/standalone';
+import {
+  IonContent,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonItem,
+  IonInput,
+  IonButton,
+  IonIcon,
+  IonList,
+  IonCheckbox,
+  IonLabel,
+  IonChip,
+  IonSelect,
+  IonSelectOption,
+} from '@ionic/angular/standalone';
 import { Category, Task } from '../core/models/todo.model';
 import { combineLatest, map } from 'rxjs';
 
 import { CategoryModalComponent } from '../components/category-modal/category-modal.component';
-import {TodoService} from '../core/services/todo.service';
+import { TodoService } from '../core/services/todo.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: true,
+  changeDetection:ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
@@ -35,12 +51,16 @@ import {TodoService} from '../core/services/todo.service';
 })
 export class HomePage {
   public taskName: string = '';
-  public taskList: Task[] = [];
   public selectedCategory: string | null = null;
-  public categories$ = this.todoService.categories$;
-  selectedCategory$ = this.todoService.selectedCategory$;
 
-  filteredTasks$ = combineLatest([
+  public todoService = inject(TodoService);
+  private modalCtrl = inject(ModalController);
+  private alertCtrl = inject(AlertController);
+
+  public categories$ = this.todoService.categories$;
+  public selectedCategory$ = this.todoService.selectedCategory$;
+
+  public filteredTasks$ = combineLatest([
     this.todoService.tasks$,
     this.todoService.categories$,
     this.todoService.selectedCategory$,
@@ -53,21 +73,12 @@ export class HomePage {
           ? tasks
           : tasks.filter((t) => t.categoryId === selectedCatId);
 
-      // Adjuntar el nombre de la categoría a cada tarea
       return filtered.map((task) => ({
         ...task,
-        categoryName:
-          categoryMap.get(task.categoryId ? task.categoryId : '') ||
-          'Sin Categoría',
+        categoryName: categoryMap.get(task.categoryId || '') || 'Sin Categoría',
       }));
     }),
   );
-
-  constructor(
-    private modalCtrl: ModalController,
-    private alertCtrl: AlertController,
-    public todoService: TodoService,
-  ) {}
 
   onFilterChange(ev: any) {
     this.todoService.setFilter(ev.detail.value);
@@ -96,7 +107,6 @@ export class HomePage {
           text: 'Eliminar',
           role: 'destructive',
           handler: async () => {
-            // Llama al servicio delegando la eliminación y persistencia reactiva
             await this.todoService.deleteTask(task.id);
           },
         },
@@ -106,10 +116,8 @@ export class HomePage {
     await alert.present();
   }
 
-  async toggleTaskCompletion(task: Task, event: any) {
-    task.completed = event?.detail?.checked ?? !task.completed;
+  async toggleTaskCompletion(task: Task) {
     await this.todoService.toggleTask(task.id);
-    localStorage.setItem('tasks', JSON.stringify(this.taskList));
   }
 
   async openCategoryModal() {
@@ -120,37 +128,38 @@ export class HomePage {
     await modal.present();
   }
 
-  async changeTaskCategory(task: Task){
-
-    const cateories = this.todoService.categories$.value;
-    const inputs = cateories.map((category:Category)=>({
-        type:'radio' as const,
-        label:category.name,
-        value:category.id,
-        cheched: task.categoryId ===category.id
+  async changeTaskCategory(task: Task) {
+    const categories = this.todoService.categories$.value;
+    const inputs = categories.map((category: Category) => ({
+      type: 'radio' as const,
+      label: category.name,
+      value: category.id,
+      checked: task.categoryId === category.id,
     }));
 
     const alert = await this.alertCtrl.create({
-      header:'Cambiar Categoria',
-      subHeader:`Tarea: ${task.name}`,
-      inputs:inputs,
-      buttons:[
-        {text:'Cancelar', 
-          role:'cancel'},
+      header: 'Cambiar Categoría',
+      subHeader: `Tarea: ${task.name}`,
+      inputs: inputs,
+      buttons: [
         {
-          text:'Guardar',
-          handler:async(selectedCategoryId:string)=>{
-            if (selectedCategoryId === task.categoryId) return;
-
-            await this.todoService.updateTaskCategory(task.id, selectedCategoryId);
-          }
-        } ],
-
-    })
+          text: 'Cancelar',
+          role: 'cancel',
+        },
+        {
+          text: 'Guardar',
+          handler: async (selectedCategoryId: string) => {
+            if (!selectedCategoryId || selectedCategoryId === task.categoryId)
+              return;
+            await this.todoService.updateTaskCategory(
+              task.id,
+              selectedCategoryId,
+            );
+          },
+        },
+      ],
+    });
 
     await alert.present();
   }
 }
-
-
-

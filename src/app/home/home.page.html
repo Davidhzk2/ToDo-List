@@ -1,6 +1,6 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title> ToDo List </ion-title>
+    <ion-title>ToDo List</ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -11,39 +11,41 @@
     </ion-toolbar>
   </ion-header>
 
-  
   <div id="container">
     <div class="container-header">
       <ion-title class="title" color="secondary">Agregar Tarea</ion-title>
       <ion-button color="secondary" (click)="openCategoryModal()">
-        <ion-icon name="add-circle-outline"></ion-icon>
-        <span>Agregar Categoria</span>
+        <ion-icon name="add-circle-outline" slot="start"></ion-icon>
+        <span>Gestionar Categorías</span>
       </ion-button>
     </div>
+
     <div class="form-container">
       <ion-item lines="full">
         <ion-input placeholder="Nombre tarea" [(ngModel)]="taskName"></ion-input>
       </ion-item>
+
       <ion-item lines="full">
         <ion-select
           placeholder="Seleccionar categoría"
           [(ngModel)]="selectedCategory"
         >
           <ion-select-option value="">Sin categoría</ion-select-option>
-          <ion-select-option
-            *ngFor="let category of categories$ | async"
-            [value]="category.id"
-          >
-            {{ category.name }}
-          </ion-select-option>
+          <!-- Carga optimizada con @for -->
+          @for (category of categories$ | async; track category.id) {
+            <ion-select-option [value]="category.id">
+              {{ category.name }}
+            </ion-select-option>
+          }
         </ion-select>
       </ion-item>
+
       <ion-button
         color="success"
         [disabled]="!taskName.trim()"
         (click)="addTask()"
       >
-        <ion-icon name="add"></ion-icon>
+        <ion-icon name="add" slot="start"></ion-icon>
         <span>Agregar</span>
       </ion-button>
     </div>
@@ -62,59 +64,60 @@
               placeholder="Categoría"
             >
               <ion-select-option value="ALL">Todas</ion-select-option>
-              <ion-select-option
-                *ngFor="let category of categories$ | async"
-                [value]="category.id"
-              >
-                {{ category.name }}
-              </ion-select-option>
+              @for (category of categories$ | async; track category.id) {
+                <ion-select-option [value]="category.id">
+                  {{ category.name }}
+                </ion-select-option>
+              }
             </ion-select>
           </ion-item>
         </div>
       </div>
 
       <ion-list lines="none" class="task-list">
-        @for(task of filteredTasks$ | async; track task.id || task.name) {
-        <ion-item class="task-card" [class.completed]="task.completed">
-          <ion-checkbox
-            class="completed"
-            slot="start"
-            [checked]="task.completed"
-            (ionChange)="toggleTaskCompletion(task, $event)"
-          >
-          </ion-checkbox>
+        @for (task of filteredTasks$ | async; track task.id) {
+          <ion-item class="task-card" [class.completed]="task.completed">
+            <ion-checkbox
+              slot="start"
+              [checked]="task.completed"
+              (ionChange)="toggleTaskCompletion(task)"
+            >
+            </ion-checkbox>
 
-          <ion-label class="task-title" [class.strike]="task.completed">
-            {{ task.name }}
-          </ion-label>
+            <ion-label class="task-title" [class.strike]="task.completed">
+              {{ task.name }}
+            </ion-label>
 
-      @if (task.categoryName) {
-        
-        <ion-chip class="category-chip" color="tertiary" [outline]="true" (click)="changeTaskCategory(task)">
-          <ion-label>{{ task.categoryName }}</ion-label>
-          <ion-icon name="create-outline"></ion-icon>
-        </ion-chip>
-      } @else {
-        <ion-chip class="category-chip empty " (click)="changeTaskCategory(task)">
-          <ion-label>Sin categoría</ion-label>
-        </ion-chip>
-      }
+            @if (task.categoryName && task.categoryName !== 'Sin Categoría') {
+              <ion-chip class="category-chip" color="tertiary" [outline]="true">
+                <ion-label>{{ task.categoryName }}</ion-label>
+              </ion-chip>
+            } @else {
+              <ion-chip class="category-chip empty">
+                <ion-label>Sin categoría</ion-label>
+              </ion-chip>
+            }
 
-          <ion-button
-            slot="end"
-            color="danger"
-            (click)="deleteTask(task)"
-          >
-          <ion-icon name="trash-outline"></ion-icon>
+            <ion-button
+              slot="end"
+              color="secondary"
+              (click)="changeTaskCategory(task)"
+            >
+              <ion-icon name="create-outline" ></ion-icon>
+            </ion-button>
 
-          </ion-button>
-        </ion-item>
+            <ion-button
+              slot="end"
+              color="danger"
+              (click)="deleteTask(task)"
+            >
+              <ion-icon name="trash-outline"></ion-icon>
+            </ion-button>
+          </ion-item>
         } @empty {
-        <ion-item lines="none" class="empty-item">
-          <ion-label class="ion-text-center"
-            >¡No tienes tareas agregadas!</ion-label
-          >
-        </ion-item>
+          <ion-item lines="none" class="empty-item">
+            <ion-label class="ion-text-center">¡No tienes tareas agregadas!</ion-label>
+          </ion-item>
         }
       </ion-list>
     </div>

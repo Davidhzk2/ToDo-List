@@ -92,6 +92,9 @@
   --inner-padding-end: 8px;
   --padding-start: 12px;
   --min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   margin-bottom: 12px;
   border: 1.5px solid #1a1a1a;
@@ -128,15 +131,10 @@ ion-checkbox.completed::part(container) {
   }
 
   .category-chip {
-    margin: 0 12px;
-    height: 28px;
-    font-size: 0.85rem;
-    font-weight: 500;
 
     &.empty {
       --background: transparent;
       --color: #777777;
-      border-style: dashed;
     }
 
     ion-label {
