@@ -89,11 +89,13 @@
           </ion-label>
 
       @if (task.categoryName) {
-        <ion-chip class="category-chip" color="tertiary" [outline]="true">
+        
+        <ion-chip class="category-chip" color="tertiary" [outline]="true" (click)="changeTaskCategory(task)">
           <ion-label>{{ task.categoryName }}</ion-label>
+          <ion-icon name="create-outline"></ion-icon>
         </ion-chip>
       } @else {
-        <ion-chip class="category-chip empty">
+        <ion-chip class="category-chip empty " (click)="changeTaskCategory(task)">
           <ion-label>Sin categoría</ion-label>
         </ion-chip>
       }

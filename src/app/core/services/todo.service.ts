@@ -78,6 +78,15 @@ export class TodoService {
     await this._storage?.set('tasks', tasks);
   }
 
+  async updateTaskCategory(taskId:string, newCategoryId: string){
+    const updatedTasks = this.tasks$.value.map((task) =>
+      task.id === taskId ? { ...task, categoryId: newCategoryId } : task,
+    );
+
+    this.tasks$.next(updatedTasks);
+    await this._storage?.set('tasks', updatedTasks);
+  }
+
   setFilter(categoryId: string) {
     this.selectedCategory$.next(categoryId);
   }

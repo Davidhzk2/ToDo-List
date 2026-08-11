@@ -119,6 +119,37 @@ export class HomePage {
 
     await modal.present();
   }
+
+  async changeTaskCategory(task: Task){
+
+    const cateories = this.todoService.categories$.value;
+    const inputs = cateories.map((category:Category)=>({
+        type:'radio' as const,
+        label:category.name,
+        value:category.id,
+        cheched: task.categoryId ===category.id
+    }));
+
+    const alert = await this.alertCtrl.create({
+      header:'Cambiar Categoria',
+      subHeader:`Tarea: ${task.name}`,
+      inputs:inputs,
+      buttons:[
+        {text:'Cancelar', 
+          role:'cancel'},
+        {
+          text:'Guardar',
+          handler:async(selectedCategoryId:string)=>{
+            if (selectedCategoryId === task.categoryId) return;
+
+            await this.todoService.updateTaskCategory(task.id, selectedCategoryId);
+          }
+        } ],
+
+    })
+
+    await alert.present();
+  }
 }
 
 
